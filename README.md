@@ -30,6 +30,8 @@ To create the index, we followed these steps:
 
 We visualized the results of the social deprivation index using a choropleth plot. In this plot, darker shades represent higher levels of social deprivation. The analysis revealed that socially deprived regions are concentrated in the south and western parts of Chicago. We speculate that factors such as proximity to Lake Michigan, downtown areas, and family composition may contribute to these patterns.
 
+![chicago-deprivation-index](https://github.com/siddig-m/Chicago-SocialDeprivationIndex/assets/55728795/38fbba54-a79f-4b39-b9c0-c99db5b9cc8a)
+
 ## Future Directions
 
 While this index provides valuable insights, further exploration is encouraged. Possible areas of interest include:
