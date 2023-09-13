@@ -1,0 +1,79 @@
+---
+author: "Siddig Mohamed"
+date: "22/12/2022"
+output: html_document
+---
+
+## 1)
+
+```{r}
+# Load Libraries
+library(tidyr)
+library(dplyr)
+library(sf)
+library(tmap)
+library(rgdal) 
+```
+
+## 2)
+```{r}
+# read data and shapefile
+data = read.csv("./data/Chicago_ACS_2019.csv")
+lsoa = readOGR("./data/Chicago_CTs.shp")
+# provide summary
+summary(data)
+```
+
+## 3)
+
+```{r}
+# concatante columns
+Geo_FIPS = paste(lsoa$statefp10, lsoa$countyfp10, lsoa$tractce10, sep="")
+# convert character to numeric
+Geo_FIPS = as.numeric(Geo_FIPS)
+lsoa@data$Geo_FIPS = Geo_FIPS
+
+# Merge data
+data = merge(lsoa, data)
+```
+
+## 4)
+
+```{r}
+# Create max-min normalization function
+max_min = function(value){
+  (value - min(value)) / (max(value) - min(value))
+}
+
+# normalize SES variables
+data$Edu_2019_norm = max_min(data$Edu_2019)
+data$Unemp_2019_norm = max_min(data$Unemp_2019)
+data$Income_2019_norm = max_min(data$Income_2019)
+data$Built_2019_norm = max_min(data$Built_2019)
+data$Rent_2019_norm = max_min(data$Rent_2019)
+
+# reverse income level direction for social deprivation
+data$Income_2019_norm = 1 - data$Income_2019_norm 
+# create total average and normalize it
+data$sd_index = (data$Edu_2019_norm + data$Unemp_2019_norm + data$Income_2019_norm + data$Built_2019_norm + data$Rent_2019_norm)
+
+data$sd_index = max_min(data$sd_index / 5)
+```
+
+
+```{r}
+# plot index
+library(tmap) 
+library(gridExtra) 
+library(grid) 
+library(TTR)
+p1 = qtm(data,fill="sd_index",fill.style="quantile" , fill.palette="Purples",borders = NULL) + tm_layout(main.title = "Chicago Social Deprivation Index")
+
+
+tmap_arrange(p1)
+
+```
+
+
+
+
